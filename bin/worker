@@ -1,0 +1,12 @@
+#!/Users/rizos/Desktop/CS/CSD/ΠΤΥΧΙΑΚΗ/Projects/venv/bin/python -x
+# EASY-INSTALL-ENTRY-SCRIPT: 'Lattice-SVP','console_scripts','worker'
+__requires__ = 'Lattice-SVP'
+import re
+import sys
+from pkg_resources import load_entry_point
+
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw?|\.exe)?$', '', sys.argv[0])
+    sys.exit(
+        load_entry_point('Lattice-SVP', 'console_scripts', 'worker')()
+    )

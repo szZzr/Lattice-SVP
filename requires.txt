@@ -1,0 +1,13 @@
+autoconf
+cysignals
+clang
+Cython
+pycrypto
+gmpy2
+numpy
+fpylll
+intel-openmp
+janus
+setuptools
+pyzmq
+janus

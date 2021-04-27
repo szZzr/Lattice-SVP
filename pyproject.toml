@@ -1,0 +1,3 @@
+[build-system]
+requires = ["autoconf","clang","cysignals","Cython >= 0.29.15","gmpy","gmpy2","intel-openmp","pycrypto","setuptools >= 46.0.0", "wheel","pyzmq","zmq","numpy","fpylll"]
+build-backend = "setuptools.build_meta"

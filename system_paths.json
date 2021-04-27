@@ -1,0 +1,1 @@
+{"g++": "/usr/local/Cellar/gcc/10.2.0_2/bin/g++-10", "zmq": {"lib": "/usr/local/Cellar/zeromq/4.3.2/lib", "include": "/usr/local/Cellar/zeromq/4.3.2/include"}, "boost": {"lib": "/usr/local/Cellar/boost/1.72.0_1/lib", "include": "/usr/local/Cellar/boost/1.72.0_1/include"}}
