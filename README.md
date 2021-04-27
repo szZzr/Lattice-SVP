@@ -50,6 +50,8 @@ To simulate the operation, we have create an app which executes all the modules 
 
 ##### Below is presented a work flow
 
+![workFLow](workFLow.png)
+
 ```mermaid
 graph TB
 subgraph Server
