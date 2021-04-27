@@ -2,4 +2,4 @@ build/
 src/Lattice_SVP.egg-info
 __pycache__/
 *.pyc
-
+cmake-build-debug/
