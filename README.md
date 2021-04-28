@@ -50,7 +50,7 @@ To simulate the operation, we have create an app which executes all the modules 
 
 ##### Below is presented a work flow
 
-![workFLow](workFLow.png)
+![workFLow](workFlow.png)
 
 ```mermaid
 graph TB
