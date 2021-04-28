@@ -48,7 +48,7 @@ To simulate the operation, we have create an app which executes all the modules 
 
 
 
-##### Below is presented a work flow
+##### Below is presented the work flow
 
 ![workFLow](workFlow.png)
 
