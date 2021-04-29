@@ -66,7 +66,7 @@ To simulate the operation, we have create an app which executes all the modules 
   * `$ cd src`
   * `$ python cython_setup.py build_ext -i`
 
-##### Below is presented a work flow
+##### Below is presented the work flow
 
 ```mermaid
 graph TB
