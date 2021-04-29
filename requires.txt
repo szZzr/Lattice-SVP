@@ -3,11 +3,14 @@ cysignals
 clang
 Cython
 pycrypto
-gmpy2
+gmpy
 numpy
-fpylll
 intel-openmp
 janus
 setuptools
 pyzmq
-janus
+psutil
+colorama
+style
+update
+fpylll

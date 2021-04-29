@@ -1,19 +1,39 @@
-#### Steps to install
+#### Steps to install... for linux users
 
-* clone git
-* You must have install pip installer. You can find it here https://pypi.org/project/pip/ .
+* Clone git.
+  * `git clone https://github.com/szZzr/Lattice-SVP.git`
+* You must have install the pip installer. You can find it here https://pypi.org/project/pip/ . *MacOS users need to follow the instuctions below, but instead of pip-installer they can use brew-installer.* 
+  * `$ sudo apt-get update`
+  * `$ sudo apt-get upgrade`
+  * `$ sudo apt install python3-pip`
 * Install new Virtual Enviroment to avoid changes in your system:
-  *  `$ python3 -m venv /path/to/new/virtual/environment`
+  * `$ sudo apt-get install python3-venv`
+  * `$ python3 -m venv /path/to/new/virtual/enviroment_name`
 * Activate Virtual Enviroment
-  *  `$ source /path/to/venv/bin/activate` 
-* Go to donwloaded package.
-  *  `$ cd Lattice_SVP`
-* The package requires some libs, you can run the following command to install them
-  * `$ pip install -r requires.txt`
+  *  `$ source /path/to/enviroment_name/bin/activate` 
+* The package requires some libs, you can run the following command to install them, this procedure may takes a few minutes.
+  * To install the FPYLLL package (includes in suggestions.txt) if you don't, first need to follow the instructions bellow and after you can run the command. 
+    * `$ pip install -r requires.txt
 * To install the package
   * `$ python setup.py develop`
 
+##### To install FPYLLL lib
 
+You can follow the instructions of FPYLLL official github repository, you can find it here (https://github.com/fplll/fpylll). But for your convenience we quote some instructions.
+
+* Need to have install GCC.
+  * sudo apt-get update
+  * sudo apt-get install build-essential
+  * To verify that you have install succesfully the GCC compiler, use `$ gcc --version
+* Install GMP, MPFR, MPC.
+  * `$ sudo apt-get install libgmp3-dev` libmpfr-dev libmpc-dev
+* Install fplll. (The procedure takes a few minutes)
+  * `$ sudo apt-get install libtool autotools-dev autoconf fplll-tools`
+  * Suppose that you have already activate the Virtual Enviroment, if you not do it, and then follow the instruction above.
+    * `$ cd /path/to/dir/of/gitclone/Lattice-SVP`
+    * `$ ./install-dependencies.sh $VIRTUAL_ENV`
+    * `$ export PKG_CONFIG_PATH='$VIRTUAL_ENV/lib/pkgconfig'`
+    * `$ export LD_LIBRARY_PATH="$VIRTUAL_ENV/lib"`
 
 #### Run Simulator
 
@@ -46,19 +66,15 @@ To simulate the operation, we have create an app which executes all the modules 
   * `$ cd src`
   * `$ python cython_setup.py build_ext -i`
 
-
-
 ##### Below is presented a work flow
-
-![workFLow](workFlow.png)
 
 ```mermaid
 graph TB
 subgraph Server
-	Manager[(Manager)] ---> Secretary(Secretary)
+	Manager[(Manager)] ---> |Info| Secretary(Secretary)
 end
-Manager ==== |After| Worker-1st & Worker-2nd & Worker-Nth{{Worker-Nth}}
-Secretary -..-> |First| Worker-1st & Worker-2nd & Worker-Nth
-Worker-1st & Worker-2nd & Worker-Nth ---> Pot[(Pot)]
+Manager ==== |Task| Worker-1st & Worker-2nd & Worker-Nth{{Worker-Nth}}
+Secretary -..-> |Info| Worker-1st & Worker-2nd & Worker-Nth
+Worker-1st & Worker-2nd & Worker-Nth ---> |Result| Pot[(Pot)]
 ```
 
