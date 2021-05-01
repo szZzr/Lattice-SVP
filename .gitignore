@@ -9,5 +9,5 @@ src/Lattice_SVP.egg-info
 *.swp
 *.a
 .DS_Store
-manager_proces/__init__.py
-worker_process/__init__.py
+**/manager_process/__init__.py
+**/worker_process/__init__.py
