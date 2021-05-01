@@ -8,3 +8,4 @@ src/Lattice_SVP.egg-info
 *.o
 *.swp
 *.a
+.DS_Store
