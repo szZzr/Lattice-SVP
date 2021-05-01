@@ -7,6 +7,7 @@ class Executor:
     PATH:str = cur_path + '/src/Lattice_SVP'
     def __init__(self, options):
         self.settings = {}
+        self.processes = []
         if options.depth > options.nodes:
             self.settings['mode'],self.settings['request'] = 'D', options.depth # DEPTH
         elif options.depth < options.nodes:
@@ -55,11 +56,12 @@ class Executor:
             data = await self.display_q.async_q.get()
             print(f"{data}")
             self.display_q.async_q.task_done()
-            # await asyncio.sleep(0.01)
+            await asyncio.sleep(0.01)
 
     async def pending_tasks(self):
         loop = asyncio.get_event_loop()
-        for task in asyncio.Task.all_tasks(loop=loop):
+        pending = asyncio.Task.all_tasks(loop=loop)
+        for task in pending:
             if not task.done():
                 try:
                     task.cancel()
@@ -72,27 +74,27 @@ class Executor:
         pot_sem = asyncio.Semaphore(0)
 
         ### NOTE: Create SubProcesses
-        processes = []
+        #processes = []
         print(f'settings: {self.settings}')
         manager = aManager(worker_sem, pot_sem,  # SEMAPHORES
                            no_workers=self.workers,
                            settings = self.settings)
-        processes.append(manager.create_task())
-        processes.append(aPot(pot_sem, self.settings['basis']).create_task())
-        processes.append(aSecretary().create_task())
-        for worker in range(self.workers):
-            processes.append(aWorker(worker_sem).create_task())
+        pot = aPot(pot_sem, self.settings['basis'])
 
+        self.processes.append(manager.create_task())
+        self.processes.append(pot.create_task())
+        self.processes.append(aSecretary().create_task())
+        for worker in range(self.workers):
+            self.processes.append(aWorker(worker_sem).create_task())
         self.aProc_killer = manager.terminate_processes
-        return processes
 
     async def run(self, timeout:int=10):
-        tasks = self.init_aProcesses()
         loop = asyncio.get_event_loop()
-        show_task = loop.create_task(self.async_show())
+        self.init_aProcesses() # init self.processes
+        show_task = loop.create_task(self.async_show()) # init displayer
 
         ### NOTE: Starting async execution
-        group = asyncio.shield(asyncio.gather(show_task, *tasks))
+        group = asyncio.shield(asyncio.gather(show_task, *self.processes))
         for sig in (SIGTERM, SIGINT):
             loop.add_signal_handler(sig, self.handler, sig, group)
         try:

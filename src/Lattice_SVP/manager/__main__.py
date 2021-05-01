@@ -35,6 +35,9 @@ def run(requests: dict, mode:int, request:int, path:str, settings:dict):
     Manager.data_path = path
     manager = Manager(requests)
     manager.division_of_labour(mode= mode, request=request, settings = settings)
+    if settings['basis'] == 'test' and not settings['simulate']:
+        manager.show_serial_tasks()
+        return
 
     if manager.inform_secretary():
         manager.share_tasks()
@@ -129,6 +132,10 @@ def set_options():
                         type=int,
                         dest="blocksize",
                         default=settings['blocksize'])
+    parser.add_argument('--simulate',
+                        help="Simulate mode, defines the worker to run on the simulator",
+                        action="store_true",
+                        dest="simulate")
     return parser.parse_args()
 
 def main(path:str):
@@ -147,6 +154,7 @@ def main(path:str):
     }
     requests = {p: request(ports[p]) for p in ports.keys()}
     settings = {
+        'simulate': options.simulate, #run via simulator
         'basis':'test' if options.testing else options.basis,
         'R':options.R,
         'dimensions': options.dimensions,

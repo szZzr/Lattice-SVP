@@ -1,6 +1,6 @@
 from . import *
 
-def close_ports():
+def close_ports() -> bool:
     '''
         This method close all open ports which are used by the application.
         It requires to run the application as system administrator using the
@@ -17,19 +17,26 @@ def close_ports():
         print("\t----Ports are already closed----")
         return False
     else:
+        pids = list(filter(None,pids))
         print(f"Pids to terminate {pids}.")
-    for pid in pids:
-        try:
-            psutil.Process(pid).terminate()
-            pids.append(pid)
-        except psutil.NoSuchProcess:
-            print(f'Process[{pid}] is already terminated.')
+
+    close_pids(lambda pid: psutil.Process(pid).terminate(), pids)
+    if len(pids)>0:
+        close_pids(lambda pid: psutil.Process(pid).kill(), pids)
     print("\t----Ports just closed----")
     return True
 
+def close_pids(close_method, pids:list):
+    for pid in pids:
+        try:
+            close_method(pid)
+        except psutil.NoSuchProcess:
+            print(f'Process[{pid}] is already terminated.')
+
+
 def run(options):
-    print(f'MAIN THREAD: {threading.current_thread() is threading.main_thread()}')
-    if sys.platform in ('darwin','unix') :
+    print(f'MAIN THREAD: {threading.current_thread() is threading.main_thread()}\nplatform: {sys.platform}')
+    if sys.platform in ('darwin','unix','linux') :
         if options.close_ports:
             close_ports()
 
@@ -63,7 +70,7 @@ def set_options():
     parser.add_argument('-c', '--close_ports',
                         help="Just close all ports used by current application. To set this module must you"
                              "run the application as administrator, so that to allow the application to have"
-                             "access to your system ports. To run as administrator use the keyword sudo."
+                             "access to your system ports. To run as administrator use the keyword sudo in darwin systems."
                              "After that you can safely run the application without sudo and -c flag.",
                         action="store_true",
                         dest="close_ports")
@@ -151,14 +158,18 @@ def main():
     print(options)
     if options.close_ports:
         close_ports()
+    elif options.depth == -1 and options.nodes == -1:
+        print(f'Must to define the desired enumeration mode, by nodes or depth.'
+                f'TIP: Run \'simulator -h\' to helps you.')
     else:
         run(options)
 
 
 smain = '__main__'
-if __name__== smain or __name__[len(smain):]==smain:
-    print('FIRST HERE')
-    main()
-elif __name__=="app":
+if __name__== smain or __name__[-len(smain):]==smain:
+    exit(main())
+elif __name__=="simulator":
     options = {'close_ports':False, 'workers':2}
-    run(options)
+    exit(run(options))
+else:
+	exit(main())

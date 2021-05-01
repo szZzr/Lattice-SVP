@@ -95,4 +95,3 @@ if secretary.info_gathering():
     # print("Information sharing has begin...")
     secretary.run()
     print('Bye...')
-    exit(0)

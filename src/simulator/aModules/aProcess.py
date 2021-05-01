@@ -26,13 +26,20 @@ class aProcess:
             string = output.decode("utf-8").strip()
             await self.async_q.put(self.display_color + f'\t{self.name}:\t{string}' + Fore.RESET)
             await self.write(string)
+            #await asyncio.sleep(0.001) # NOTE: CHECK ME
 
 
     async def create_task(self):  # async_qrimported_libs
-        self.process = await asyncio.create_subprocess_exec(
-            sys.executable, *self.cmd, #limit = 1024 * 1024,
-            stdin=asp.PIPE, stdout=asp.PIPE, stderr=asp.STDOUT, cwd=self.path)
-        aProcess.pidQUEUE.put(self.process.pid)
+        try:
+            self.process = await asyncio.create_subprocess_exec(
+                sys.executable, *self.cmd, #limit = 1024 * 1024,
+                stdin=asp.PIPE, stdout=asp.PIPE, stderr=asp.STDOUT, cwd=self.path)
+            await asyncio.sleep(0.1)
+        except:
+            print(f'\nProcess [{self.process.pid}] \'{self.name}\' has failed!')
+            exit()
+        finally:
+            aProcess.pidQUEUE.put(self.process.pid)
         print(f"{self.name}:[{self.process.pid}]")
         await self.display()
 

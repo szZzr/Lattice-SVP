@@ -8,10 +8,10 @@ find_package(Boost REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
 
-INCLUDE_DIRECTORIES( /usr/local/Cellar/zeromq/4.3.2/include )
-INCLUDE_DIRECTORIES( /usr/local/Cellar/boost/1.72.0_1/include )
-LINK_DIRECTORIES( /usr/local/Cellar/zeromq/4.3.2/lib )
-LINK_DIRECTORIES( /usr/local/Cellar/boost/1.72.0_1/lib )
+INCLUDE_DIRECTORIES( /usr/include )
+INCLUDE_DIRECTORIES( /usr/include/boost )
+LINK_DIRECTORIES( /usr/lib/x86_64-linux-gnu )
+LINK_DIRECTORIES( /usr/lib/x86_64-linux-gnu )
 
 include_directories(${PROJECT_SOURCE_DIR})
 

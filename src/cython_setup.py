@@ -39,8 +39,8 @@ ext = lambda index: Extension(
                   system_paths['zmq']['include'],
                   system_paths['boost']['include']
                   ],
-    extra_compile_args=['-std=c++17','-fopenmp', "-Os"],
-    extra_link_args=['-fopenmp']
+    extra_compile_args=['-std=c++17'],#'-fopenmp', "-Os","-fPIC"
+    #extra_link_args=['-fopenmp']
 )
 
 setup(

@@ -26,8 +26,13 @@ def fp_file(path:str = PATH):
 
 
 def b_file(path:str):
-    with open(path, 'rb') as file:
-        basis, _= pkl.load(file).values()
+    try:
+        with open(path, 'rb') as file:
+            basis, _= pkl.load(file).values()
+    except FileNotFoundError:
+        print(f'\n--- COMPARISON FAILED---\n'
+            f'File \'{path}\' not found!')
+        return None
     l_basis = list(basis)
     l_basis.sort(key=lambda  lb: norm(lb))
     it = iter(l_basis)
@@ -70,11 +75,13 @@ def main():
     # manager_conn, workers_conn = connect(*settings())
     print('To open the pot press ENTER')
     input()
+    print('I ve grap the input')
     # pot(manager_conn, workers_conn)
     result = pot.run()
     print(f"\t***The norm of the SVP is {result}.***")
     pre_norm = preprocessing_norm()
     # save_data()
+    exit(0)
 
 def set_options(manBasis:bool=False):
     import argparse

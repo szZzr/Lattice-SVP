@@ -51,15 +51,18 @@ class Manager:
         '''
         Divide in tasks the enumeration procedure.
 
-        This method defines Basis of a Lattice using a random algorithm to produce the lattice
-        according with the SVP Competition and subsequently invokes cython's ManagerProcess module
-        which divide the main task in subtasks. The cython's module result is already serialized.
-        The type of cython result "tasks" is a dictionary with the following pattern
+        This method defines Basis of a Lattice using a random algorithm to
+        produce the lattice according with the SVP Competition and subsequently
+        invokes cython's ManagerProcess module which divide the main task in
+        subtasks. The cython's module result is already serialized. The type of
+        cython result "tasks" is a dictionary with the following pattern
         {'boost1': b_infos, 'boost2': b_jobs}
         where Boost1: ( B,M, norms, R, n ) and Boost2: ( x,limit )
-        :param no_tasks: an integer which defines the number of task which select to divide the whole work
+        :param no_tasks: an integer which defines the number of task which
+        select to divide the whole work
         :type no_tasks: int
-        :return: A dictionary {'boost1': b_infos, 'boost2': b_jobs} has explained above
+        :return: A dictionary {'boost1': b_infos, 'boost2': b_jobs} has
+        explained above
         '''
         settings['basis'] = settings['basis'].strip()
         if settings['basis'] == 'test':
@@ -103,7 +106,11 @@ class Manager:
         :return: True if communication has established and completed
         '''
         secretary = self.context.socket(zmq.REP)
-        secretary.bind(self.requests['secretary'])
+        try:
+            secretary.bind(self.requests['secretary'])
+        except zmq.error.ZMQError:
+            self.address_in_use_Ex('secretary')
+
         while True:  # not(informed)
             request = secretary.recv_string()
             if request == "I m your secretary!":
@@ -129,15 +136,26 @@ class Manager:
         According with zmq pipeline pattern, it implements the communication
         between manager and workers. First established the communication with
         the worker-port where will send each task and the candidates workers
-        could grap them. Secondly established the connection between the pot-port.
-        Finally sends each task of the list to the worker's port.
+        could grap them. Secondly established the connection between the
+        pot-port. Finally sends each task of the list to the worker's port.
         '''
         # context = zmq.Context()
-        worker = self.context.socket(zmq.PUSH)
-        worker.bind(self.requests['worker'])
-
-        pot = self.context.socket(zmq.PUSH)
-        pot.connect(self.requests['pot'])
+        connections = {'worker':None, 'pot':None}
+        import time
+        for conn in connections.keys():
+            connections[conn] = self.context.socket(zmq.PUSH)
+        #self.socket_communicate(lambda req: connections[conn].bind(req),'worker')
+        #self.socket_communicate(lambda req: connections[conn].connect(req),'pot')
+            try:
+                print(f'\tTry to open {conn}\'s port...{self.requests[conn]}')
+                if conn=='worker':
+                    connections[conn].bind(self.requests[conn])
+                else:
+                    connections[conn].connect(self.requests[conn])
+            except zmq.error.ZMQError:
+                self.address_in_use_Ex(conn)
+            finally:
+                print(f'\t...{conn}\'s port is open!\n')
 
         print('Press ENTER if workers are ready')
         input()
@@ -145,21 +163,47 @@ class Manager:
 
 
         len_tasks = len(self.tasks['boost2'])
-        pot.send_string(hex(len_tasks))
-        pot.send_string(float(self.R).hex())
+        connections['pot'].send_string(hex(len_tasks))
+        connections['pot'].send_string(float(self.R).hex())
 
         # worker.send(tasks['boost1'])
         for i, task in enumerate(self.tasks['boost2']):
-            worker.send(task)
+            connections['worker'].send(task)
             print("The task-" + str(i) + " has been sent!")
-        worker.close()
-        pot.close()
+        connections['worker'].close()
+        connections['pot'].close()
         return True
+
+    def socket_communicate(self, zmq_method, port):
+        try:
+            print(f'\tTry to open {port}\'s port...{self.requests[port]}')
+            zmq_method(self.requests[port])
+        except zmq.error.ZMQError:
+            '''Message Error for address in use zmq Exception.'''
+            print(f'\n---FAILED---')
+            print(f'{port.capitalize()}-Communication-Port is in use.\n'
+                f'The request {self.requests[port]} has failed.')
+            print(f'\nTIP: You can use command: \'simulator -c\'')
+            exit(-1)
+        finally:
+            print(f'\t...{port}\'s port is open!\n')
+
+    def address_in_use_Ex(self,connection:str):
+        '''Message Error for address in use zmq Exception.'''
+        print(f'\n---FAILED---')
+        print(f'{connection.capitalize()}-Communication-Port is in use.\n'
+            f'The request {self.requests[connection]} has failed.')
+        print(f'\nTIP: You can use command: \'simulator -c\'')
+        exit(-1)
 
     def context_term(self):
         self.context.term()
         print("Terminate Connections")
 
+    def show_serial_tasks(self):
+        print(f'--Secretary Information---\n{self.tasks["boost1"]}\n\n---Tasks---\n')
+        for i, task in enumerate(self.tasks['boost2']):
+            print(f'{i}) {task}')
 
 
 

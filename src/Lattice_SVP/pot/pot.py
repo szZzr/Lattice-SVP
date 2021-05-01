@@ -5,15 +5,26 @@ from numpy.linalg import norm
 class Pot():
     def __init__(self, m_address:str, w_address:str):
         context = zmq.Context()
-        self.manager = context.socket(zmq.PULL)
-        self.manager.bind(m_address)
 
+        self.manager = context.socket(zmq.PULL)
+        #self.manager.bind(m_address)
+        self.bind(self.manager, m_address,'manager')
         # acontext = aContext()
         self.workers = context.socket(zmq.PULL)
-        self.workers.bind(w_address)
+        #self.workers.bind(w_address)
+        self.bind(self.workers, w_address,'worker')
 
         self.no_tasks = 0
         self.results = []
+
+    def bind(self, socket, address:str, name:str):
+        try:
+            socket.bind(address)
+        except zmq.error.ZMQError:
+            print(f'\n---FAILED---\n'
+                f'{name.capitalize()}-Communication-Port is in use.\n'
+                f'\nTIP: You can use command: \'simulator -c\'')
+            exit(-1)
 
     def manager_conn(self):
         self.no_tasks = int(self.manager.recv(), 16)

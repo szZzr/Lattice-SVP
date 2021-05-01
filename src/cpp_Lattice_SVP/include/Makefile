@@ -1,10 +1,13 @@
-CC = g++
+CC = g++-10
 AR = ar rcs
 STD = c++17
-INCLUDES = -I/usr/local/Cellar/zeromq/4.3.2/include \
-	-I/usr/local/Cellar/boost/1.72.0_1/include
+INCLUDES = -I/usr/include \
+	-I/usr/include/boost
 
-BUILD_PATH = ../bin2
+LIBRARIES = -L/usr/lib/x86_64-linux-gnu/libboost_serialization.a \
+	-L/usr/lib/x86_64-linux-gnu/libzmq.a
+
+BUILD_PATH = ../libs
 TARGET = $(BUILD_PATH)/libMyTool.a
 OBJECTS = libUtils.o \
 	libPair.o \
@@ -21,7 +24,7 @@ $(TARGET): $(OBJECTS)
 	$(AR) $@ $^
 
 lib%.o : %.cpp
-	$(CC) $(INCLUDES) -c -std=$(STD) $< -o $@
+	$(CC) -fPIC $(LIBRARIES) -lboost_serialization -lzmq -c -std=$(STD) $< -o $@
 
 libTree.o : Tree.hpp
 libNode.o : Node.hpp

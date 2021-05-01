@@ -9,7 +9,7 @@ class aManager(aProcess):
         format of dict -> {'mode':str, 'request':int, 'dimensions':int, 'bits':int, 'blocksize':int}
         '''
         super().__init__('manager')
-        self.cmd = ['-m', 'manager',
+        self.cmd = ['-m', 'manager', '--simulate',
                     f'-B {settings["basis"].lower()}',
                     f'-R {settings["R"]}',
                     f'-{settings["mode"]} {settings["request"]}',

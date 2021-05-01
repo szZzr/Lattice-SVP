@@ -4,7 +4,7 @@ from .libs import *
 class aPot(aProcess):
     def __init__(self, semaphore: asyncio.Semaphore, basis:str='random'):
         # super().__init__('pot/tempPot', 'pot')
-        super().__init__('pot')
+        super().__init__('pot')    
         self.cmd = ['-m', 'pot','--manual-basis',f'{basis.lower()}']
         self.semaphore = semaphore
         self.display_color = Fore.MAGENTA

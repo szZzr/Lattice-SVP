@@ -1,4 +1,4 @@
-#!/Users/rizos/Desktop/CS/CSD/ΠΤΥΧΙΑΚΗ/Projects/venv/bin/python -x
+#!/home/szr/Desktop/git/svp/bin/python
 # EASY-INSTALL-ENTRY-SCRIPT: 'Lattice-SVP','console_scripts','pot'
 __requires__ = 'Lattice-SVP'
 import re

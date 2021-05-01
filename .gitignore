@@ -1,5 +1,10 @@
 build/
-src/Lattice_SVP.egg-info
-__pycache__/
-*.pyc
+bin/
 cmake-build-debug/
+__pycache__/
+src/Lattice_SVP.egg-info
+*.pyc
+*.so
+*.o
+*.swp
+*.a
