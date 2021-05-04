@@ -128,6 +128,8 @@ Worker-1st & Worker-2nd & Worker-Nth ---> |Result| Pot[(Pot)]
 
 #### The Sequence Flow Diagram of Nodes Communication
 
+![sequenceFlow](./sequenceFlow.png)
+
 ```mermaid
 sequenceDiagram
 	participant Manager
@@ -155,11 +157,5 @@ sequenceDiagram
 	Manager --x Secretary: Close Session
 	Pot -->> Pot: Tasks Finished!<br/>I have the Results!
 	Note over Pot: Best Shortest<br/>Vector Norm
-
-		
-	
-	
 ```
-
-![sequenceFlow](./sequenceFlow.png)
 
