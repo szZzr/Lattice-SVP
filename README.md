@@ -112,9 +112,9 @@ To simulate the operation, we have create an app which executes all the modules 
   
   
 
-##### Below is presented the work flow
+#### The Work Flowchart
 
-##### ![workFlow](/Users/rizos/Desktop/testGit/Lattice-SVP/workFlow.png)
+##### ![workFlow](./workFlow.png)
 
 ```mermaid
 graph TB
@@ -125,4 +125,41 @@ Manager ==== |Task| Worker-1st & Worker-2nd & Worker-Nth{{Worker-Nth}}
 Secretary -..-> |Info| Worker-1st & Worker-2nd & Worker-Nth
 Worker-1st & Worker-2nd & Worker-Nth ---> |Result| Pot[(Pot)]
 ```
+
+#### The Sequence Flow Diagram of Nodes Communication
+
+```mermaid
+sequenceDiagram
+	participant Manager
+	Note over Manager: Input Lattice Basis
+	participant Secretary
+	participant Worker/s
+	participant Pot
+	activate Manager
+	Manager ->> Manager: Enumeration Tree
+	deactivate Manager
+	par Share Basic Information<br/>at server's machines
+		Manager ->> Secretary: Basic Information<br/>(Lattice-Basis, GSO Coef,<br/>Norms, Range)
+		Manager ->> Pot: Procedure Information<br/>(Range, noTasks)
+	end
+	Secretary ->> Worker/s: Basis Information<br/>(Lattice-Basis, GSO Coef,<br/>Norms, Range)
+	loop Tasks Sharing
+		Worker/s -->> Manager: I 'm ready<br/>(Connected)
+		Manager ->> Worker/s: Task<br/>(starting Vector, Range)
+		activate Worker/s
+		Worker/s ->> Worker/s: Schnorr and Euchner<br/>Parallel<br/>Enumeration Algorithm
+		Worker/s ->> Pot: Task Result<br/>(Shortest Vector)
+		deactivate Worker/s
+	end
+	Manager -->> Manager: Tasks have shared!
+	Manager --x Secretary: Close Session
+	Pot -->> Pot: Tasks Finished!<br/>I have the Results!
+	Note over Pot: Best Shortest<br/>Vector Norm
+
+		
+	
+	
+```
+
+![sequenceFlow](./sequenceFlow.png)
 
