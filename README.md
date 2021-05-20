@@ -8,10 +8,10 @@ Because of the complexity of manual installation we recommend the usage of Docke
 * Clone git.
   `$ git clone https://github.com/szZzr/Lattice-SVP.git`
 * Installation of Docker Image. *(the generated image is around 1.5gb)*
-  `$./Lattice-SVP/runme.sh`
+  `$ ./Lattice-SVP/runme.sh`
   You can modify the `runme.sh` according with your preferences. 
 * Create a docker container. *(at least 4-logical cpus)*
-  `docker container run --name test --cpus="5" -it svp:latest /bin/bash`
+  `$ docker container run --name test --cpus="5" -it svp:latest /bin/bash`
 
 If you would like to verify that everythink run by the book, you can run the example below.
 
@@ -41,7 +41,7 @@ To simulate the operation, we have create an app which executes all the modules 
 
 ![sequenceFlow](./operationCharts/sequenceFlow.png)
 
-#### Manual install (Linux)
+### Manual Install (Linux)
 
 * Clone git.
   * `$ git clone https://github.com/szZzr/Lattice-SVP.git`
@@ -63,7 +63,7 @@ Now you just have sattisfy the requirements for the package installation. The st
 * Go to package file `/Lattice-SVP` and run
   `$ python setup.py develop`
 
-##### FPYLLL lib Installation
+#### FPYLLL lib Installation
 
 You can follow the instructions about installation of FPYLLL through official library's github repository, you can find it here (https://github.com/fplll/fpylll). But for your convenience we quote some instructions.
 
@@ -84,7 +84,7 @@ You can follow the instructions about installation of FPYLLL through official li
 * Modify the virtual enviroment configuration to include the system's paths.
 
 
-##### Build CPP's Static Library
+#### Build CPP's Static Library
 
 * If you don't have install the ZeroMQ, Boost and OpenMP libraries, here is a command for linux installation.
   * `$ sudo apt-get install libzmq3-dev libboost-all-dev libomp5 libomp-dev`
@@ -100,7 +100,7 @@ You can follow the instructions about installation of FPYLLL through official li
 * To verify that static library has created, must be exist the file
   `path/to/Lattice-SVP/src/cpp_Lattice_SVP/libs/libMyTool.a`
 
-##### Build cython's modules
+#### Build cython's modules
 
 We have implement for you, the compiler settings and you can find them in `Lattice-SVP/src/cython_setup.py`. All you need is to follow the instructions below.
 
