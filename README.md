@@ -1,4 +1,4 @@
-#### Docker Install
+### Docker Install
 
 Because of the complexity of manual installation we recommend the usage of Docker.
 
