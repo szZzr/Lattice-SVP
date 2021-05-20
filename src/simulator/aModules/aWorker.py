@@ -5,7 +5,7 @@ class aWorker(aProcess):
     _WORKER = 0 #stores the definition order of workers
     def __init__(self, semaphore, threads:int=2): # semaphore: asyncio.Semaphore
         super().__init__()
-        self.cmd = ['-m', 'worker', '-D', '-T', threads]
+        self.cmd = ['-m', 'worker', '-D', f'-T {threads}']
         self.semaphore = semaphore
         self.name = 'worker-'+ str(aWorker._WORKER)
         self.display_color = Fore.CYAN
