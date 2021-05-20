@@ -34,9 +34,9 @@ def exec(worker):
     worker.task_assignment()
 
 # # # RUN APPLICATION
-def run(execution):
+def run(execution, threads:int=2):
     requests = create_requests()
-    worker = Worker(requests, threads=2)
+    worker = Worker(requests, threads=threads)
     worker.info_gathering()
     print(f'---Information Received---\n'
           f'R: {worker.info["R"]} - Dimensions: {worker.info["n"]}\n')
@@ -69,11 +69,19 @@ def set_options():
                                      description="Worker-module which based on Schnorr and "
                                                  "Euchner algorithm, executes the given task.")
     parser.add_argument('-D', '--debug',
-                        help="Debuge mode, defines the worker to run on the simulator. This mode"
+                        help="Debug mode, defines the worker to run on the simulator. This mode"
                              "applies asynchronous communication, uses python's asyncio library.",
                         action="store_true",
                         dest="debug")
-    parser.add_argument('-T', '--testing',
+    parser.add_argument('-T', '--threads',
+                        help="Testing mode, sets up the worker to run with predefined data. This "
+                             "mode is just for testing usage, to note if the worker has normally "
+                             "execution.",
+                        action="store",
+                        type = int,
+                        dest="threads",
+                        default=2),
+    parser.add_argument('-t', '--testing',
                         help="Testing mode, sets up the worker to run with predefined data. This "
                              "mode is just for testing usage, to note if the worker has normally "
                              "execution.",
@@ -83,11 +91,11 @@ def set_options():
 
 def main(options):
     if options.debug:
-        run(async_exec)
+        run(async_exec, options.threads)
     elif options.testing:
         testing()
     else:
-        run(exec)
+        run(exec, options.threads)
     return
 
 

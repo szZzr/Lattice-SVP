@@ -1,10 +1,9 @@
 #### Steps to install... for linux users
 
 * Clone git.
-  * `git clone https://github.com/szZzr/Lattice-SVP.git`
+  * `$ git clone https://github.com/szZzr/Lattice-SVP.git`
 * You must have install the pip installer. You can find it here https://pypi.org/project/pip/ . *MacOS users need to follow the instuctions below, but instead of pip-installer they can use brew-installer.* 
-  * `$ sudo apt-get update`
-  * `$ sudo apt-get upgrade`
+  * `$ sudo apt-get update && apt-get upgrade`
   * `$ sudo apt install python3-pip`
 * Install new Virtual Enviroment to avoid changes to your system:
   * `$ sudo apt-get install python3-venv`
@@ -19,24 +18,19 @@ Now you just have sattisfy the requirements for the package installation. The st
 * *Build CPP's Static Library* `libMyTool.a` .
 * *Build cython's modules*.
 * Go to package file `/Lattice-SVP` and run
-  `python setup.py develop`
+  `$ python setup.py develop`
 
 ##### FPYLLL lib Installation
 
 You can follow the instructions about installation of FPYLLL through official library's github repository, you can find it here (https://github.com/fplll/fpylll). But for your convenience we quote some instructions.
 
 * Need to have install GCC compiler.
-  * `sudo apt-get update`
-  * `sudo apt-get install build-essential`
+  * `$ sudo apt-get update && apt-get install build-essential` 
   * To verify that you have install succesfully the GCC compiler, use `$ gcc --version we need a version >=9.
-    * sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-    * sudo apt-get update
-    * sudo apt-get install gcc-10
-    * sudo apt-get install g++-10
-  
+    * `$ sudo add-apt-repository ppa:ubuntu-toolchain-r/test`
+    * `$ sudo apt-get update && apt-get install gcc-10 g++-10` 
 * Install GMP, MPFR, MPC.
   * `$ sudo apt-get install libgmp3-dev libmpfr-dev libmpc-dev`
-  
 * Install fplll. (This procedure takes a few minutes)
   * `$ sudo apt-get install libtool autoconf pkg-config fplll-tools`
   * Suppose that you have already activate the Virtual Enviroment, if you not, do it! (following the instruction above). After that need to install some depedencies due fplll installation.
@@ -44,14 +38,13 @@ You can follow the instructions about installation of FPYLLL through official li
     * `$ export PKG_CONFIG_PATH=$VIRTUAL_ENV/lib/pkgconfig`
     * `$ export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib`
     * `$ ./install-dependencies.sh $VIRTUAL_ENV`
-  
 * Modify the virtual enviroment configuration to include the system's paths.
 
 
 ##### Build CPP's Static Library
 
 * If you don't have install the ZeroMQ, Boost and OpenMP libraries, here is a command for linux installation.
-  * `sudo apt-get install libzmq3-dev libboost-all-dev libomp5 libomp-dev`
+  * `$ sudo apt-get install libzmq3-dev libboost-all-dev libomp5 libomp-dev`
 * `$ cd path/to/Lattice-SVP/src/cpp_Lattice_SVP/include`
 * `$ nano Makefile`
 * This opens the compiler's instruction to create the static library. Everything is preset for you, the only think you need to do, is to change the `$INCLUDES` and the `$LIBRARIES` according with your system paths. So, need to find your system's `libboost_serialization` and `libzmq` includes and libs and you can replace according the default settings. *To find these files you can use `whereis`, `locate`, `mdfind`, etc... but suggest you to advice the default settings (common paths).*
@@ -96,11 +89,11 @@ We have implement for you, the compiler settings and you can find them in `Latti
 
 ### Run Simulator
 
-Just run `$ simulator -D 2 -B test` this command runs a test basis with Tree Enumeration Depth equals 2.
+Just run `$ simulator -W 1 -D 2 -B test` this command runs a test basis with Tree Enumeration Depth equals 2.
 
 To simulate the operation, we have create an app which executes all the modules together. The operation of simulator includes the followings...
 
-* It opens the manager and secretary module, which you can setting up by yourself. You can see the options if you run `$ manager --help `. Manager (module) informs secretary with problem's specification, after that secretary broadcasts the information of problem, and secretary will finish its job when the manager just have done its work.
+* It opens the manager and secretary module, which you can setting up by yourself. You can see the options if you run `$ managersimu --help `. Manager (module) informs secretary with problem's specification, after that secretary broadcasts the information of problem, and secretary will finish its job when the manager just have done its work.
 
 * Simultaneously, opens by default 3 workers (ofcourse you can set whatever number of worker you prefer, but need to care about your system's seeds). Firstly the workers take information  (Basis, GSO Coefficients and GH Range) about the problem by secretary, after that connect to manager to receive the task and solve the problem with a usage of a parallel implementation, each time they finish their task, just need to re-connect with the manager (not secretary again) and receive a new task. The algorithm behind the implementation is an enumeration algorithm of Schnorr and Euchner.
 

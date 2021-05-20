@@ -20,7 +20,8 @@ class Executor:
             'R' : options.R,
             'dimensions': options.dimensions,
             'bits': options.bits,
-            'blocksize': options.blocksize
+            'blocksize': options.blocksize,
+            'threads':options.threads
         })
             #raise Exception('Mode initialization has failed.')
         self.workers = options.workers
@@ -85,7 +86,7 @@ class Executor:
         self.processes.append(pot.create_task())
         self.processes.append(aSecretary().create_task())
         for worker in range(self.workers):
-            self.processes.append(aWorker(worker_sem).create_task())
+            self.processes.append(aWorker(worker_sem, self.settings['threads']).create_task())
         self.aProc_killer = manager.terminate_processes
 
     async def run(self, timeout:int=10):

@@ -101,7 +101,7 @@ def set_options():
                         type=str,
                         dest="basis",
                         default="random")
-    parser.add_argument('-T', '--testing',
+    parser.add_argument('-t', '--testing',
                         help="Testing mode, sets up the worker to run with predefined data. This "
                              "mode is just for testing usage, to note if the worker has normally "
                              "execution.",
