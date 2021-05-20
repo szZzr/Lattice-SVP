@@ -11,3 +11,4 @@ src/Lattice_SVP.egg-info
 .DS_Store
 **/manager_process/__init__.py
 **/worker_process/__init__.py
+.idea/

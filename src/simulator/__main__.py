@@ -172,4 +172,4 @@ elif __name__=="simulator":
     options = {'close_ports':False, 'workers':2}
     exit(run(options))
 else:
-	exit(main())
+    exit(main())

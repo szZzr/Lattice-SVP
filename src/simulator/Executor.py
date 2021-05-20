@@ -21,7 +21,7 @@ class Executor:
             'dimensions': options.dimensions,
             'bits': options.bits,
             'blocksize': options.blocksize,
-            'threads':options.threads
+            'threads': options.threads,
         })
             #raise Exception('Mode initialization has failed.')
         self.workers = options.workers
