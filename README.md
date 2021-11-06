@@ -2,15 +2,15 @@
 
 Because of the complexity of manual installation we recommend the usage of Docker.
 
-* Need to have install docker.
+* Required to have installed docker.
 * Requirement consists the Ubuntu image. 
   `$ docker pull ubuntu:latest`
 * Clone git.
   `$ git clone https://github.com/szZzr/Lattice-SVP.git`
-* Installation of Docker Image. *(the generated image is around 1.5gb)*
-  `$./Lattice-SVP/runme.sh`
+* Setting up the Docker Image. *(the generated image is around 1.5gb)*
+  `$./Lattice-SVP/vm_setup/runme.sh`
   You can modify the `runme.sh` according with your preferences. 
-* Create a docker container. *(at least 4-logical cpus)*
+* Run docker container. *(at least 4-logical cpus)*
   `docker container run --name test --cpus="5" -it svp:latest /bin/bash`
 
 If you would like to verify that everythink run by the book, you can run the example below.
@@ -128,3 +128,12 @@ We have implement for you, the compiler settings and you can find them in `Latti
   `path/to/Lattice_SVP/manager/manager_process`
   `path/to/Lattice_SVP/worker/worker_process`
   there must be placed on the files `__init__.py`, `objectName.cpp`, `objectName.***.so` .
+
+##### Contribution
+
+For anyone who interest to contribute... you can find some usefulls shells at `shells` folder. 
+
+* `runcompile.sh` with this shell you can recompile the project if you have made some changes at the cython code section.
+* `runowning.sh` if you have used the `docker cp` command and want to change the owning of the new file, this shell might be usefull for you with a bit of modification
+*  `runpot.sh` you can use this shell in case you want to verify the algorithm's result with the usage of FPYLLL algorithm which solves the SVP. The basis source locates at `/Lattice-SVP/src/data/basis/random` in your DockerVM, and this shell makes a copy of it.
+

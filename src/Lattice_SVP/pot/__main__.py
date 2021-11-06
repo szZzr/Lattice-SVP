@@ -1,7 +1,5 @@
-import sys, pickle as pkl
 from numpy.linalg import norm
-from . import Pot, cur_path
-
+from . import *#Pot, cur_path, bkz, copy
 PATH = ''
 
 def path_handler(path:str=cur_path, prev_dir:int=1):
@@ -14,12 +12,13 @@ def path_handler(path:str=cur_path, prev_dir:int=1):
 
 def fp_file(path:str = PATH):
     import time
-    from fpylll import IntegerMatrix, SVP as fp_svp
+    from fpylll import SVP as fp_svp
     with open(path, 'rb') as file:
         basis = pkl.load(file)
     print(f"Requested norm according GH: {basis['R']}\n")
     s1 = time.time()
-    fp = fp_svp.shortest_vector(basis['basis'])
+    bkz_basis = bkz(basis['basis'], block_size=basis['n']//2)
+    fp = fp_svp.shortest_vector(bkz_basis, pruning=None)
     duration1 = time.time() - s1
     print("FPYLLL: ", norm(fp), "\tTIME: ", duration1)
     return norm(fp)
@@ -28,7 +27,7 @@ def fp_file(path:str = PATH):
 def b_file(path:str):
     try:
         with open(path, 'rb') as file:
-            basis, _= pkl.load(file).values()
+            basis = pkl.load(file)['lll_basis']
     except FileNotFoundError:
         print(f'\n--- COMPARISON FAILED---\n'
             f'File \'{path}\' not found!')

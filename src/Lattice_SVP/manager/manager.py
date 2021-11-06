@@ -30,21 +30,37 @@ class Manager:
         R = 9
         return basis, R
 
+    def best_norm(self, basis):
+        from numpy.linalg import norm
+        l_basis = list(basis)
+        l_basis.sort(key=lambda lb: norm(lb))
+        it = iter(l_basis)
+        best = next(it)
+        while norm(best) == 0:
+            best = next(it)
+        return norm(best)*1.01
+
     def random_basis(self, dimensions, bits, blocksize):
         path = Manager.data_path + '/basis/random'
         print(f'The path: {path}')
-        basis = bkz(copy(c_basis(dimensions, bits)), block_size=blocksize)
+        #basis = bkz(copy(c_basis(dimensions, bits)), block_size=blocksize)
+        random_basis = c_basis(dimensions, bits)
+        basis = lll(copy(random_basis))
+        # bkz_basis = bkz(copy(random_basis), block_size=dimensions//2)
         R = float(gh(basis, 1.05))
         with open( path, 'wb') as file:
-            pkl.dump({'basis':basis, 'R':R},file)
-        return basis, R
+            pkl.dump({'basis': random_basis, 'lll_basis':basis, 'R':R, 'n':dimensions},file)
+        b_norm = self.best_norm(basis)
+        print('GH: ', R, " BestNorm: ",b_norm)
+        if (b_norm > R):
+            b_norm = R
+        return basis, b_norm
 
     def predefined_basis(self, data_path:str = None):
-        path = Manager.data_path + '/basis/random' if data_path is None else data_path
-        with open(path, 'rb') as file:
-            basis, R = pkl.load(file).values()
-        # with open(path+'/test', 'wb') as file:
-        #     pkl.dump({'basis': basis, 'R': R}, file)
+        path = '/basis/random' if data_path is None else data_path
+        print("path: ", Manager.data_path+path)
+        with open(Manager.data_path+path, 'rb') as file:
+            _, basis, R, _ = pkl.load(file).values()
         return basis, R
 
     def division_of_labour(self, mode: int, request: int, settings: dict):

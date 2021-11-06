@@ -132,8 +132,9 @@ cdef inline void parallel_args(int range, int* size, int* step, int* threads):
         threads[0] =  size[0] = range
 
 
-cdef void basic_algorithm(num*** _S, int* s_points, num[:,::1] B, numf[:,::1] M,
-                        numf[::1] norms, num* x, numf R, int n, int limit, int t_id) nogil:
+cdef void basic_algorithm(num[:,::1] B, numf[:,::1] M, numf[::1] norms, numf R, int n,
+                          num*** _S, int* s_points, num* x,
+                          size_t i_border, int lower_bound, int upper_bound) nogil:
     '''
     The backbone method of Enumeration Algorithm
     
@@ -154,7 +155,7 @@ cdef void basic_algorithm(num*** _S, int* s_points, num[:,::1] B, numf[:,::1] M,
     :return: void
     '''
     cdef:
-        int i=0
+        int i=0, test = 0
         numf sum_li, best_norm
         num[::1] sum, dx, d2x
         numf[::1] c, l
@@ -163,18 +164,13 @@ cdef void basic_algorithm(num*** _S, int* s_points, num[:,::1] B, numf[:,::1] M,
         sum = np.zeros(n, dtype=d_type)
         dx, d2x = np.zeros(n, dtype=d_type), (-1)* np.ones(n, dtype=d_type)
         dx[0] = 1
-        d2x[0] -=1
+        d2x[0] = 1
 
         S=[]
-        while i < n:
-            if x[n-1] > limit: #i==0 and
-                # printf("\n\n***break***\nCause...\n")
-                # printf("\tlimit+1: %d", limit+1)
-                # show_all(i, x, sum_li, R, n,t_id)
-                break
-
-            c[i] = c_(i, x, M, n)
-            l[i] = norms[i] * ((x[i] - c[i]) ** 2)
+        while i < i_border:
+            test += 1
+            c[i] = - c_(i, x, M, n)
+            l[i] = norms[i]* ((x[i] - c[i]) ** 2)
 
             sum_li = 0
             for j in range(i, n):
@@ -185,14 +181,13 @@ cdef void basic_algorithm(num*** _S, int* s_points, num[:,::1] B, numf[:,::1] M,
             if sum_li <= R**2 and i == 0:  # #NOTE: R => R**2
                 sum = np.multiply(sum, 0)
                 for j in range(n):
-                    sum += np.multiply(np.asarray(B[j]), x[j])
-                best_norm  = np.linalg.norm(sum)
+                    sum += np.multiply(x[j], np.asarray(B[j]))
+                best_norm  = np.linalg.norm(sum)#**2
                 if best_norm< R and best_norm>0:
                     S.append(sum)
                     show_array(sum, n, "\tvector")
-                    break
-                    # R = best_norm
-                    # x[0] += 1
+                    R = best_norm
+                    #break
 
             if sum_li <= R**2 and i>0:  # #NOTE: R => R**2
                 i -= 1
@@ -201,16 +196,20 @@ cdef void basic_algorithm(num*** _S, int* s_points, num[:,::1] B, numf[:,::1] M,
                 dx[i] = 0
                 d2x[i] = 1 if c[i] < x[i] else -1
             else:
-                if i == n :
+                if i==i_border or (i==i_border-1 and (x[i]<lower_bound or x[i]>upper_bound)):
                     printf("\nHere has broke with i: %d\n",i)
                     break
                 else:  #sum_li>R or i==0:
                     i += 1
-                    d2x[i] = -1 * d2x[i]
-                    dx[i] = -1 * dx[i] + d2x[i]
+                    d2x[i] = - d2x[i]
+                    dx[i] = - dx[i] + d2x[i]
                     x[i] += dx[i]
+                    if i==i_border-1 and (x[i]<lower_bound or x[i]>upper_bound):
+                        printf("\nBRoooke AFTER ++ --> x[%d] = %d __ iborder-1=%d\n", i,x[i],i_border-1)
+                        break
 
-        s_points[0] = len(S)
+        s_points[0] = len(S) # In case where not break with the first
+        printf("***Number of iteration: %d\n**Number of resutlts: %d", test, s_points[0])
         if s_points[0] >0:
             _S[0] = <num**> malloc(s_points[0]*sizeof(num*))
             to_c_array(S, _S[0], n)
@@ -241,8 +240,8 @@ cpdef bytes intro(int _threads, num[:,::1] B, numf[:,::1] M, numf[::1] norms,
     :return: serialized results list of vectors
     '''
     cdef:
-        int i=0, j, step, s_size,  width=0, i_limit=0, threads, start=0, t_id
-        size_t limit, index=0, i_pos #index_position
+        int i=0, processes, balance, width, upper_bound, lower_bound
+        size_t limit, i_border, threads, t
         num*** _S
         num* x,** x_prl
         int* s_points
@@ -250,20 +249,30 @@ cpdef bytes intro(int _threads, num[:,::1] B, numf[:,::1] M, numf[::1] norms,
         Pair[long] task
 
     task.deserialize(boost2)
-    limit = task.limit
-    i_pos = task.pos
+    i_border = task.pos # x[i_border]: VALUE NEVER CHANGE
+    width = task.limit + 1 # x[index_border-1] -> [0, task.upper_bound]
     x = task.get_job()
-
     task.show()
 
-    threads = _threads
-    # printf('\t--Num of threads: %d\n', threads)
-    width = abs(<int>(limit) - x[i_pos]) + 1
-    parallel_args(width, &s_size, &step, &threads)
+    if i_border == 0:  #Server has already enumerate the branch
+        printf("***i_border==0***")
+        _S = <num***> malloc(sizeof(num**))
+        _S[0] = <num**> malloc(n*sizeof(num*))
+        s_points = <int*> calloc(1, sizeof(int))
+        s_points[0] = 1
+        memcpy(_S[0], x, n*sizeof(num))
+        return pkl.dumps(to_list(_S, s_points, 1, n))
 
-    s_points = <int*> calloc(s_size, sizeof(int))
-    _S = <num ***> malloc(s_size * sizeof(num**))
-    x_prl = <num**> malloc(s_size * sizeof(num*))
+    if _threads>0:
+        processes = width//_threads
+        balance = width%_threads
+        threads = balance if processes==0 else _threads
+    else:
+        return pkl.dumps("")
+
+    s_points = <int*> calloc(threads, sizeof(int))
+    _S = <num ***> malloc(threads * sizeof(num**))
+    x_prl = <num**> malloc(threads * sizeof(num*))
 
     #NOTE: Create an array of x-copies "x_prl", to avoid parallel overwriting
     # because there is no way yet to define an omp private variable without #pragma
@@ -271,29 +280,25 @@ cpdef bytes intro(int _threads, num[:,::1] B, numf[:,::1] M, numf[::1] norms,
         x_prl[i] = <num*> malloc(n*sizeof(num))
         memcpy(x_prl[i], x, n*sizeof(num))
 
-    # printf("\nS_SIZE = %d\n", s_size)
 
-
-    start = x[i_pos]
-    # printf("\n\nLoop args:(start=%d ,limit+1=%d , step=%d )\n",start, limit+1, step)
-    # printf('Num of threads: %d\n', threads)
-    threads = 2
     omp.omp_set_num_threads(threads)
     with nogil, wraparound(False), boundscheck(False), parallel():
-        for i in prange(start, limit+1, step, schedule = 'static'):
-            t_id = threadid()
+        for i in prange(0, threads, schedule = 'static'):
+            t = i + 1
+            upper_bound = processes*t - 1 + (t+balance-threads)*((t+balance)>=threads)
+            lower_bound = upper_bound + 1 - processes - ((t+balance)>=threads)
 
-            x_prl[t_id][i_pos] = i #<int> (i+ (step-1)/2) #NOTE: Center of space
-            index = <int> abs(i - start) / step
+            x_prl[i][i_border-1] = lower_bound
 
-            printf("\n- ThreaID: %d\tindex: %d\tx[%d]: %d\n", t_id, index, i_pos, x_prl[t_id][i_pos])
+            printf("\n-%d) ThreaID: %d\tx[%d]: [%d, %d]\n",
+                   t, threadid(), i_border-1, lower_bound, upper_bound)
 
-            i_limit = limit + 1 if i + step - 1 > limit + 1 else i + step - 1
+            basic_algorithm(B, M, norms, R, n, &_S[i], &s_points[i], x_prl[i],
+                            i_border, lower_bound, upper_bound)
+            memcpy(x_prl[i], x, n * sizeof(num))
+            printf("\nFinished the ThreadID: %d\n", threadid())
 
-            basic_algorithm(&_S[index], &s_points[index], B, M, norms, x_prl[t_id], R, n, i_limit, t_id)
-            memcpy(x_prl[t_id], x, n * sizeof(num))
-            # printf("\nFinished the ThreadID: %d\n", t_id)
-    S = to_list(_S, s_points, s_size, n)
+    S = to_list(_S, s_points, threads, n)
 
     free(_S) #It isn't the right way...
     free(s_points)

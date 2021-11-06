@@ -46,7 +46,7 @@ ENV PATH="$PATH:/usr/lib"
 #
 # Import instructions and Install Libraries via repo Requirements
 #
-COPY instructions ./instructions
+COPY vm_setup/instructions ./instructions
 RUN instructions/install-dependencies.sh
 RUN pip install -r instructions/requires.txt
 #

@@ -1,0 +1,45 @@
+\begin{abstract}
+Στη σημερινή εποχή η ανθρώπινη ζωή δεν θεωρείται απλά συνυφασμένη με την τεχνολογία, αλλά στην πλειονότητα των περιπτώσεων εξαρτάται από αυτήν, σε τέτοιο βαθμό που η ψηφιακή ασφάλεια αποτελεί θεμελιώδη ανάγκη που επιζητά ο άνθρωπος στην καθημερινότητα του. Ειδικότερα, η κρυπτογραφία είναι η επιστήμη που κρατάει ασφαλείς τις ψηφιακές επικοινωνίες, διαφυλάττει τα προσωπικά δεδομένα, διασφαλίζει την ακεραιότητα των συναλλαγών, ενώ φαίνεται να επωμίζεται και το μέλλον της οικονομίας, φέρει γενικότερα εφαρμογές σε όλο το μήκος της ανθρώπινης ζωής διασφαλίζοντας τον ψηφιακό μας κόσμο. 
+
+Η τεχνολογία εξελίσσεται με φρενήρεις ρυθμούς. Η επέλαση των κβαντικών υπολογιστών θα αποτελέσει σημείο αναφοράς του άμεσου μέλλοντος, παρέχοντας τη δυνατότητα επίλυσης προβλημάτων των οποίων οι λύσεις θεωρούταν μέχρι σήμερα απροσέγγιστες. Ένας κβαντικός υπολογιστής δεν είναι πλήρως λειτουργικός σήμερα, λόγω εμποδίων υλικού που αφορούν θέματα μνήμης, αλλά δεν απέχει μακριά η ημέρα που θα εδραιωθεί η χρήση του. Χάρη σε επιστήμονες όπως ο \lt Peter Shor είναι διαθέσιμοι πλέον κβαντικοί αλγόριθμοι, οι οποίοι επιλύουν το πρόβλημα του διακριτού λογαρίθμου και της παραγοντοποιήσης μεγάλων αριθμών σε κβαντικά συστήματα. Τα δύο αυτά προβλήματα αποτελούν τον πυρήνα των κρυπτοσυστημάτων που περιφρουρούν σήμερα τον ψηφιακό κόσμο, έτσι η άφιξη τους θα "αποκρυπτογραφήσει" την ανθρώπινη ζωή. 
+
+Η ανάγκη για ασφάλεια οδήγησε στην αναζήτηση νέων προβλημάτων, όπως αυτά που βασίζονται σε πλέγματα (Lattices, δικτυωτά) και θεωρούνται ισοδύναμα ως προς την επίλυση τους, τόσο σε συμβατικά, όσο σε κβαντικά συστήματα. Το Πρόβλημα του Εγγύτερου Διανύσματος (Shortest Vector Problen-SVP) σε Πλέγματα είναι αυτό που απασχολεί την παρούσα εργασία. Πιο συγκεκριμένα, στα πλαίσια της εργασίας αναπτύχθηκε λογισμικό που εστιάζει στην επίτευξη υψηλής απόδοσης, στοχεύοντας στην επίλυση του SVPγ. Ο σκοπός της προσπάθειας επίλυσης ενός τέτοιου προβλήματος, που θεωρητικά θα αποτελέσει την καρδιά των μελλοντικών κρυπτοσυστήματων, έγκειται στα πλαίσια τεκμηρίωσης του βαθμού ασφαλείας του κρυπτοσυστήματος που μπορεί να παρέχει το πρόβλημα. 
+
+Το σενάριο υλοποίησης που αναπτύχθηκε στο παραχθέν λογισμικό προσομοιάζει σε πραγματικές συνθήκες τις προκλήσεις και τις ελλείψεις πόρων, που καλείται να αντιμετωπίσει ένας κακόβουλος χρήστης, προσδοκώντας να "σπάσει" το κρυπτοσύστημα. Η τεκμηρίωση της αναφερθείσας υπόθεσης εντοπίζεται στους περιορισμένους πόρους που βρίσκονται στη διάθεση του και στον τρόπο που δύναται να τους ελέγξει. Αυτοί είναι οι λόγοι που οδήγησαν στην επιλογή του αλγορίθμου απαρίθμησης (Enumeration) των Schnor και Euchner, ο οποίος αν και υστερεί σε θέματα απόδοσης συγκριτικά με τους αλγόριθμους κοσκινίσματος (Sieving), έχει σημαντικά μικρότερες απαιτήσεις σε θέματα μνήμης, συνεπώς θεωρείται εφικτή η εκτέλεση του σε συστήματα καθημερινής χρήσης. Το κατανεμημένο σύστημα επίλυσης που υλοποιήθηκε φέρει πολλά κοινά με τις μεθόδους απόκτησης πόρων που εφαρμόζουν οι κακόβουλοι χρήστες, όπως αυτής της δημιουργίας botnet. Τέλος, η παραλληλοποίηση του αλγορίθμου βρίσκει εφαρμογή σε κάθε σύγχρονο υπολογιστικό σύστημα της τελευταίας δεκαετίας, τείνοντας να αξιοποιεί κάθε διαθέσιμο επεξεργαστικό του πόρο. 
+
+\ \\\\
+{\bf Λέξεις Κλειδιά}.
+    Κρυπτογραφία, Πλέγματα, Πρόβλημα μικρότερου Διανύσματος ({\lt SVP})
+\end{abstract}    
+\newpage
+
+{\latintext
+\begin{center}
+{\sc{abstract}}
+\end{center}
+{\small
+	{\lt Nowadays, human life is not just considered intertwined with technology, but in most cases depends on it, to such an extent that digital security is a fundamental need that man seeks in his daily life. In particular, cryptography is the science that keeps digital communications secure, preserves personal data, ensures the integrity of transactions, while it seems to take on the future of the economy, generally brings applications throughout human life ensuring our digital world .
+
+Technology is evolving at a frantic pace. The advent of quantum computers will be a point of reference for the immediate future, providing the ability to solve problems whose solutions were considered inaccessible until nowdays. A quantum computer is not fully functional today due to memory issues, however the day when its use will be established is not so far away. Thanks to scientists such as Peter Shor, quantum algorithms are now available that solve the problem of discrete logarithms and factorization of large numbers in quantum systems. These two problems are at the core of the cryptosystems that guard the digital world today, so their arrival will "decrypt" human life.
+
+The need for security has led to the pursuit for new problems, such as lattice-based problems that are considered equivalent in solving by both conventional and quantum systems. The Shortest Vector Problem (SVP) in Lattices is the focus of this thesis. More specifically, in the context of this work, software was developed that focuses on achieving high performance, aiming at solving the SVPγ. The purpose of trying to solve such a problem, which in theory will be the heart of future cryptosystems, lies in documenting the degree of security of the cryptosystem that the problem may provide.
+
+The implementation scenario developed in the produced software simulates in real conditions the challenges and the lack of resources, which a malicious user has to face, expecting to "break" the cryptosystem. The documentation of the mentioned case is located in the limited resources available to him and in the way he can control them. These are the reasons that led to the choice of the Enumeration algorithm by Schnor and Euchner, which, although lagging behind in performance compared to the sieving algorithms, has significantly lower memory requirements, so it is considered feasible in commodity systems. The distributed solution system implemented has a lot in common with the methods of obtaining resources used by malicious users, such as this botnet creation. Finally, the parallelization of the algorithm finds application in every modern computer system of the last decade, tending to utilize every available processing resource.}
+	\ \\\\
+{\bf Key Words.} Cryptography, Lattices, Shortest Vector Problem, SVP
+}}
+
+\newpage
+
+\begin{center}
+Ευχαριστίες
+\end{center}
+
+
+Πρώτα απ´ όλα, θα ήθελα να ευχαριστήσω θερμά τον επιβλέποντα καθηγητή αυτής της πτυχιακής κ. Κωνσταντίνο Δραζιώτη, για την ευκαιρία που μου έδωσε, να ασχοληθώ με το συγκεκριμένο θέμα αλλά και για την έμπνευση και το ενδιαφέρον που μου καλλιέργησε, κατά τη διάρκεια των σπουδών μου. 
+  
+%Ιδιαίτερες ευχαριστίες θα ήθελα να αποδώσω στον ...
+% Τέλος,
+Θα ήθελα επίσης να ευχαριστήσω όλους τους ανθρώπους που στάθηκαν δίπλα μου και συνέβαλαν κατά τρόπο ξεχωριστό, στο απαιτητικό αυτό διάστημα των σπουδών μου.
+
+

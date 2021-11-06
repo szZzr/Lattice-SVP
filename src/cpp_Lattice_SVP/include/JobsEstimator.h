@@ -40,7 +40,7 @@ private:
     Interval range_help_fun(std::size_t, T*);
     void jobs_intervals();
     expr_type define_expresion();
-    inline void node_spawning(Node<TPair>);
+    inline bool  node_spawning(Node<TPair>);
 
 };
 

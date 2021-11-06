@@ -310,11 +310,12 @@ cpdef dict algorithm(num[:,::1] B, numf R, size_t condition, size_t tasks):
     M = np.tril(np.ones([n,n], dtype=d_typef))
     _B = gso(M,B)
     norms= la.norm(_B,axis=1).astype(d_typef)
+    # norms= np.power(norms,2).astype(d_typef)
     # show_2d_matrixf(M,"GSO COEFF")
     # show_2d_matrix(_B, "NEW BASIS")
 
     # NOTE: BOOST 2 ---->  ( x,limit )
-    # show_1d_matrixf(norms, "NORMS")
+    show_1d_matrixf(norms, "NORMS")
     # show_2d_matrixf(M, "GSO")
     jobs.set_parameters(&norms[0], &M[0,0])
     jobs.set_jobs()

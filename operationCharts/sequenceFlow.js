@@ -4,6 +4,8 @@
  Markdown-inspired text definitions to create and modify diagrams dynamically.
  https://mermaid-js.github.io/mermaid/#/
 */
+
+```mermaid
 sequenceDiagram
 	participant Manager
 	Note over Manager: Input Lattice Basis
@@ -30,3 +32,4 @@ sequenceDiagram
 	Manager --x Secretary: Close Session
 	Pot -->> Pot: Tasks Finished!<br/>I have the Results!
 	Note over Pot: Best Shortest<br/>Vector Norm
+```

@@ -163,7 +163,7 @@ JobsEstimator<TPair,T,U>::define_expresion(){
 }
 
 template<class TPair, class T, class U>
-inline void JobsEstimator<TPair,T,U>::
+inline bool JobsEstimator<TPair,T,U>::
 node_spawning(Node<TPair> node){
     /*
      * Method for node reproduction
@@ -174,6 +174,8 @@ node_spawning(Node<TPair> node){
     T range;
     TPair parent = node.get_data();
     std::size_t height = node.depth + 1;
+    if (this->size_job<height) //In case where users asks more nodes than feasible.
+        return false;
     std::size_t index =  this->size_job - height;
     for (int i = 0; i<=parent.limit; i++){
         T* x =  new T[this->size_job]();
@@ -185,6 +187,7 @@ node_spawning(Node<TPair> node){
         tag<<height<<"::"<<this->tree->get_no_nodes()<<" => "<<i;
         this->tree->create_node(node.get_id(), tag.str(), child);
     }
+    return true;
 }
 
 template<class TPair, class T, class U>
@@ -199,13 +202,16 @@ void JobsEstimator<TPair,T,U>::jobs_intervals(){
 
     expr_type expr = define_expresion();
     typename Tree<TPair>::Iterator bfs = this->tree->begin();
-    T total_range = 0;
-
-    while(expr(total_range)){
+    T total_range = 1;
+    bool have_spawned = true;
+    //Node<TPair> parent = (*bfs);
+    //while(expr(parent)){
+    while(expr(total_range) && have_spawned){
         Node<TPair> parent = (*bfs);
-        node_spawning(parent);
-        total_range += parent.get_data().limit + 1;
+        have_spawned = node_spawning(parent);
+        total_range += parent.get_data().limit; //TODO: must fix for VIA_DEPTH mode //No +1 cause the one node will spawned
         bfs++;
+        //Node<TPair> parent = (*bfs);
     }
     std::cout<<"TOTAL RANGE: "<<total_range<<std::endl;
 }
